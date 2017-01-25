@@ -12,7 +12,8 @@ class CommentsController < ApplicationController
   def create
     return forbidden unless user_can_access_comments
 
-    comment = current_resource_owner.comments.build(full_params)
+    comment = current_resource_owner.comments.build(comment_params)
+    comment.event_id = params[:event_id]
 
     return bad_request(comment.errors.full_messages) unless comment.save
 
@@ -40,10 +41,6 @@ class CommentsController < ApplicationController
 
   def comment_params
     params.permit(:text)
-  end
-
-  def full_params
-    comment_params.merge(event_id: params[:event_id])
   end
 
   def user_can_access_comments
