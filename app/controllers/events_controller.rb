@@ -6,7 +6,7 @@ class EventsController < ApplicationController
   def show
     return forbidden unless user_can_read_event
 
-    render json: @event.as_json
+    render json: @event, status: :ok
   end
 
   # GET /api/events?due={timestamp}
@@ -26,8 +26,9 @@ class EventsController < ApplicationController
 
   # POST /api/events
   def create
-    @event = current_resource_owner.events.build(event_params)
+    @event = Event.new(event_params)
     @event.owner = current_resource_owner.id
+    @event.user_ids = [current_resource_owner.id]
 
     return bad_request('Time should be in the future') unless @event.valid? && @event.save
 
@@ -83,16 +84,8 @@ class EventsController < ApplicationController
   # GET events/:id/feed
   def feed
     return forbidden unless user_is_owner
-    add_type = lambda do |type|
-      lambda do |obj|
-        obj[:type] = type
-        obj
-      end
-    end
 
-    comments = @event.comments.as_json.map &add_type.call('comment')
-    attachments = @event.attachments.as_json.map &add_type.call('attachment')
-    feed = (comments + attachments).sort { |a, b| b[:updated_at] <=> a[:updated_at] }
+    feed = FeedService.new(@event).generate_feed_json
 
     render json: feed, status: :ok
   end
@@ -120,6 +113,6 @@ class EventsController < ApplicationController
   end
 
   def check_if_event_exists
-    render json: {error: 'The event does not exist'}, status: :not_found unless @event
+    not_found(@event) unless @event
   end
 end

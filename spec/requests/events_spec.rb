@@ -20,8 +20,13 @@ RSpec.describe 'Events', type: :request do
                                           headers: @req_headers
 
       expect(response).to have_http_status 200
-      expect(response.body).to include(@event.id.to_s, close_event.id.to_s)
-      expect(response.body).not_to include(far_event.id.to_s)
+
+      event_json = "\"id\":\"#{@event.id}\",\"type\":\"events\""
+      close_event_json = "\"id\":\"#{close_event.id}\",\"type\":\"events\""
+      far_event_json = "\"id\":\"#{far_event.id}\",\"type\":\"events\""
+
+      expect(response.body).to include(event_json, close_event_json)
+      expect(response.body).not_to include(far_event_json)
     end
 
     it 'shows an event' do

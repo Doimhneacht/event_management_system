@@ -30,15 +30,19 @@ class ApplicationController < ActionController::API
   ############################################
   ## Json responses with different statuses ##
   ############################################
+  def not_found(resource)
+    render json: {errors: "#{resource.capitalize} doesn't exist"}, status: :not_found
+  end
+
   def bad_request(*message)
     if message.empty?
       render :json, status: :bad_request
     else
-      render json: {error: message[0]}, status: :bad_request
+      render json: {errors: message[0]}, status: :bad_request
     end
   end
 
   def forbidden
-    render json: {message: 'User cannot modify this resource'}, status: :forbidden
+    render json: {errors: 'User cannot modify this resource'}, status: :forbidden
   end
 end

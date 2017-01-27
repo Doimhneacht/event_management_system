@@ -1,5 +1,6 @@
 class CommentsController < ApplicationController
   before_action :set_comment, except: [:create, :index]
+  before_action :check_if_resources_exist, except: [:create, :index]
 
   # GET /api/events/:event_id/comments
   def index
@@ -53,5 +54,10 @@ class CommentsController < ApplicationController
 
   def set_comment
     @comment = Comment.find_by_id(params[:id])
+  end
+
+  def check_if_resources_exist
+    return not_found('event') unless Event.find_by_id(params[:event_id])
+    not_found('comment') unless @comment
   end
 end

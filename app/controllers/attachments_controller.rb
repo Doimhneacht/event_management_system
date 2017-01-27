@@ -1,5 +1,5 @@
 class AttachmentsController < ApplicationController
-  before_action :check_if_resources_exist
+  before_action :check_if_resources_exist, only: :destroy
   before_action :check_if_user_owns_event
 
   # POST /api/events/:event_id/attachments
@@ -36,8 +36,7 @@ class AttachmentsController < ApplicationController
   end
 
   def check_if_resources_exist
-    unless Event.find_by_id(params[:event_id]) && Attachment.find_by_id(params[:id])
-      render json: {error: 'No such event or attachment'}, status: :not_found
-    end
+    return not_found('event') unless Event.find_by_id(params[:event_id])
+    not_found('attachment') unless Attachment.find_by_id(params[:id])
   end
 end
