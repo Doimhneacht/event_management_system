@@ -59,24 +59,9 @@ class EventsController < ApplicationController
   def invite
     return forbidden unless user_is_owner
 
-    bad_emails = []
-    users = []
-
-    invited_users_params[:emails].each do |email|
-      user = User.find_by_email(email)
-      if user
-        users << user
-      else
-        bad_emails << email
-      end
-    end
-
-    unless bad_emails.empty?
-      bad_emails.map! {|email| "#{email} is not among registered users"}
-      return bad_request(bad_emails)
-    end
-
-    users.each {|user| @event.users << user}
+    invite_service = InviteService.new(invited_users_params[:emails], @event)
+    invite_service.return_possible_errors
+    invite_service.invite_users
 
     render json: {message: 'Users have been successfully invited'}, status: :ok
   end
