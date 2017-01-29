@@ -11,14 +11,14 @@ class AttachmentsController < ApplicationController
 
     return bad_request(attachment.errors.full_messages) unless attachment.save
 
-    render json: {message: 'File has been saved'}, status: :created
+    render json: {data: {message: 'File has been saved', id: attachment.id}}, status: :created
   end
 
   # DELETE /api/events/:event_id/attachments/:id
   def destroy
     Attachment.find(params[:id]).destroy
 
-    render json: {message: 'File has been deleted'}, status: :ok
+    render json: {data: {message: 'File has been deleted'}}, status: :ok
   end
 
   private

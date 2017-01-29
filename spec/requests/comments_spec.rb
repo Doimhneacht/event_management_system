@@ -29,7 +29,6 @@ RSpec.describe 'Comments', type: :request do
     it 'shows all comments' do
       get "/api/events/#{event_id}/comments", headers: @req_headers
 
-      # byebug
       expect(response).to have_http_status 200
       expect(subject[0]['id']).to eq(@comment.id.to_s)
       expect(subject[0]['type']).to eq('comments')
