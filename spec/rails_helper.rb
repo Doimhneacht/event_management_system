@@ -1,4 +1,5 @@
 require 'database_cleaner'
+require 'support/factory_girl'
 
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV['RAILS_ENV'] ||= 'test'

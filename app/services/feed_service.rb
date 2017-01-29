@@ -12,7 +12,7 @@ class FeedService
     list.map! do |change|
       {
           id: change[:id],
-          type: type(change),
+          type: type_of(change),
           attributes: generate_attributes(change)
       }
     end
@@ -28,7 +28,7 @@ class FeedService
       updated_at: object.updated_at }
   end
 
-  def type(object)
+  def type_of(object)
     object[:class].to_s.downcase.pluralize
   end
 

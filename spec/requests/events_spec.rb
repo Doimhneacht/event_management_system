@@ -116,29 +116,6 @@ RSpec.describe 'Events', type: :request do
     end
   end
 
-  context 'when request is incorrect' do
-
-    describe 'Show closest events' do
-
-    end
-
-    describe 'Show an event' do
-
-    end
-
-    describe 'Update an event' do
-
-    end
-
-    describe 'Delete an event' do
-
-    end
-
-    describe 'Invite users to an event' do
-
-    end
-  end
-
   private
 
   def create_sample_user

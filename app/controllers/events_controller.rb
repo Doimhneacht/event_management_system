@@ -5,7 +5,6 @@ class EventsController < ApplicationController
   # GET /api/events/:id
   def show
     return forbidden unless user_can_read_event
-
     render json: @event, status: :ok
   end
 
@@ -31,7 +30,6 @@ class EventsController < ApplicationController
     @event.user_ids = [current_resource_owner.id]
 
     return bad_request('Time should be in the future') unless @event.valid? && @event.save
-
     render json: @event, status: :created
   end
 
@@ -39,7 +37,6 @@ class EventsController < ApplicationController
   def update
     return forbidden unless user_is_owner
     return bad_request unless @event.update_attributes(event_params)
-
     render json: @event, status: :ok
   end
 

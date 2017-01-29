@@ -18,15 +18,15 @@ class CommentsController < ApplicationController
 
     return bad_request(comment.errors.full_messages) unless comment.save
 
-    render json: {comment: comment}, status: :created
+    render json: comment, status: :created
   end
 
   # PUT or PATCH /api/events/:event_id/comments/:id
   def update
     return forbidden unless user_owns_comment
-    return bad_request(@comment.errors.full_messages) unless @comment.update_attributes(text: comment_params)
+    return bad_request(@comment.errors.full_messages) unless @comment.update_attributes(text: comment_params[:text])
 
-    render json: {message: 'The comment has been updated'}, status: :ok
+    render json: {data: {message: 'The comment has been updated'}}, status: :ok
   end
 
   # DELETE /api/events/:event_id/comments/:id
@@ -35,7 +35,7 @@ class CommentsController < ApplicationController
 
     @comment.destroy
 
-    render json: {message: 'The comment has been deleted'}, status: :ok
+    render json: {data: {message: 'The comment has been deleted'}}, status: :ok
   end
 
   private
