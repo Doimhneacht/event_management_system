@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Attachments", type: :request do
+RSpec.describe 'Attachments', type: :request do
   context 'with correct request' do
 
     before :each do
