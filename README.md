@@ -395,6 +395,60 @@
 
   `curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer ab5847534f519d4fd5caa7424f27a471e9aa50c9c7d6a9ce543c18c87a7032f0" http://localhost:3000/api/events/3/invite`
   
+**Show event's feed**
+----
+
+* **GET /api/events/:id/feed**
+  
+* **Headers**
+
+  * **Required:**
+  
+    Content-Type: application/json <br />
+    Authorization: Bearer [access token]
+
+* **Success Response:**
+  
+  * **Code:** 200 OK <br />
+    **Content:** <br />
+    ```json
+    [{
+          "id":[integer],
+          "type":"attachments",
+          "attributes": {
+              "filename":[string],
+              "content_type":[string],
+              "file_contents":[string],
+              "event_id":[integer],
+              "created_at":[datetime],
+              "updated_at":[datetime],
+              "user_id":[integer]}
+     },
+     {
+          "id":[integer],
+          "type":"comments",
+          "attributes": {
+              "text":[string],
+              "created_at":[datetime],
+              "updated_at":[datetime],
+              "user_id":[integer],
+              "event_id":[integer]
+      }
+      ...
+     }]
+    ```
+ 
+* **Error Response:**
+
+  * **Code:** 403 FORBIDDEN <br />
+    **Content:**
+    `{errors: 'User cannot modify this resource'}`
+  
+* **Sample Call:**
+
+  `curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer ab5847534f519d4fd5caa7424f27a471e9aa50c9c7d6a9ce543c18c87a7032f0" http://localhost:3000/api/events/3/feed`
+  
+  
 **Attach file to Event**
 ----
 
@@ -456,17 +510,159 @@
   
   * **Code:** 200 OK <br />
     **Content:** <br />
-    `{"message": "File has been deleted"}`
+    `{"data": {"message": "File has been deleted"}}`
  
 * **Error Response:**
     
   * **Code:** 404 NOT FOUND <br />
-    **Content:** `{"error": "No such event or attachment"}`
+    **Content:** `{"errors": "No such event or attachment"}`
 
   * **Code:** 403 FORBIDDEN <br />
-    **Content:** `{"message": "User cannot modify this resource"}`
+    **Content:** `{"data":{"message": "User cannot modify this resource"}}`
 
 * **Sample Call:**
 
   `curl -X DELETE -H "Authorization: Bearer ab5847534f519d4fd5caa7424f27a471e9aa50c9c7d6a9ce543c18c87a7032f0" http://localhost:3000/api/events/3/attachments/1`
   
+**Show all Comments**
+----
+
+* **GET /api/events/:event_id/comments**
+  
+* **Headers**
+
+  * **Required:**
+  
+    Authorization: Bearer [access token]
+
+* **Success Response:**
+  
+  * **Code:** 200 OK <br />
+    **Content:** <br />
+    ```json
+    {
+        "data": [{
+            "id": [integer],
+            "type": "comments",
+            "attributes": {
+                "text": [string]
+            }
+        }]
+    }
+    ```
+ 
+* **Error Response:**
+
+  * **Code:** 403 FORBIDDEN <br />
+  * **Code:** 400 BAD REQUEST <br />
+  
+* **Sample Call:**
+
+  `curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer ab5847534f519d4fd5caa7424f27a471e9aa50c9c7d6a9ce543c18c87a7032f0" http://localhost:3000/api/events/3/comments`
+    
+  
+**Create Comment**
+----
+
+* **POST /api/events/:event_id/comments**
+  
+* **Headers**
+
+  * **Required:**
+  
+    Content-Type: application/json <br />
+    Authorization: Bearer [access token]
+
+* **Data Params**
+
+  `{ "text": [string] }`
+
+* **Success Response:**
+  
+  * **Code:** 201 CREATED <br />
+    **Content:** <br />
+    ```json
+    {
+        "data": {
+            "id": [integer],
+            "type": "comments",
+            "attributes": {
+                "text": [string]
+            }
+        }
+    }
+    ```
+ 
+* **Error Response:**
+
+  * **Code:** 403 FORBIDDEN <br />
+  * **Code:** 400 BAD REQUEST <br />
+  
+* **Sample Call:**
+
+  `curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer ab5847534f519d4fd5caa7424f27a471e9aa50c9c7d6a9ce543c18c87a7032f0" -d '{"text":"hello world"}' http://localhost:3000/api/events/3/comments`
+  
+**Update Comment**
+----
+
+* **PUT or PATCH /api/events/:event_id/comments/:id**
+
+* **Headers**
+
+  * **Required:**
+  
+    Content-Type: application/json <br />
+    Authorization: Bearer [access token]
+
+* **Data Params**
+
+  `{ "text": [string] }`
+
+* **Success Response:**
+  
+  * **Code:** 200 OK <br />
+    **Content:** <br />
+    ```json
+    {
+      data: {
+        message: 'The comment has been updated'
+      }
+    }
+    ```
+ 
+* **Error Response:**
+
+  * **Code:** 403 FORBIDDEN <br />
+    **Code:** 400 BAD REQUEST
+  
+* **Sample Call:**
+
+  `curl -X UPDATE -H "Content-Type: application/json" -H "Authorization: Bearer ab5847534f519d4fd5caa7424f27a471e9aa50c9c7d6a9ce543c18c87a7032f0" -d '{"text":"something new"}' http://localhost:3000/api/events/3/comments/1`
+
+**Delete Comment**
+----
+
+* **DELETE /api/events/:event_id/comments/:id**
+
+* **Headers**
+
+  * **Required:**
+  
+    Authorization: Bearer [access token]
+
+* **Success Response:**
+  
+  * **Code:** 200 OK <br />
+    **Content:** <br />
+    `{data: {message: 'The comment has been deleted'}}`
+ 
+* **Error Response:**
+
+  * **Code:** 403 FORBIDDEN <br />
+  * **Code:** 404 NOT FOUND
+    **Content:**
+    `{"errors": "The comment does not exist"}`
+  
+* **Sample Call:**
+
+  `curl -X DELETE -H "Content-Type: application/json" -H "Authorization: Bearer ab5847534f519d4fd5caa7424f27a471e9aa50c9c7d6a9ce543c18c87a7032f0" http://localhost:3000/api/events/3/comments/1`

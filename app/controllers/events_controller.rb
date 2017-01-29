@@ -65,7 +65,7 @@ class EventsController < ApplicationController
 
   # GET events/:id/feed
   def feed
-    return forbidden unless user_is_owner
+    return forbidden unless user_can_read_event
 
     feed = FeedService.new(@event).generate_feed_json
 
